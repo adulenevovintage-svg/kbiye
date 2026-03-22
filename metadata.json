@@ -1,0 +1,5 @@
+{
+  "name": "KB Academy Ethiopia",
+  "description": "Premium educational website for KB Academy, shaping future leaders in Ethiopia with excellence in education, innovation, and character development.",
+  "requestFramePermissions": ["geolocation"]
+}
