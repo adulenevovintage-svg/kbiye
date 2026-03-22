@@ -46,6 +46,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "About", href: "#about" },
     { name: "Programs", href: "#programs" },
+    { name: "Events", href: "#events" },
     { name: "Campus", href: "#campus" },
     { name: "Staff", href: "#staff" },
     { name: "Admission", href: "#admission" },
@@ -425,6 +426,251 @@ const CampusLife = () => {
                   </div>
                 </motion.div>
               ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const EventsSection = () => {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setStatus("loading");
+    try {
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      
+      if (response.ok) {
+        setStatus("success");
+        setEmail("");
+        setTimeout(() => setStatus("idle"), 3000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch (error) {
+      console.error("Subscription error:", error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
+  };
+
+  const events = [
+    {
+      id: 1,
+      title: "Annual Science Fair 2026",
+      date: "April 15, 2026",
+      time: "9:00 AM - 3:00 PM",
+      location: "Main Campus Auditorium",
+      category: "Academic",
+      description: "Join us for our annual showcase of student innovation and scientific discovery. Students from all grades will present their projects.",
+      image: "https://picsum.photos/seed/science/800/600"
+    },
+    {
+      id: 2,
+      title: "Inter-School Sports Tournament",
+      date: "May 5, 2026",
+      time: "8:30 AM - 5:00 PM",
+      location: "KB Academy Sports Complex",
+      category: "Sports",
+      description: "Our athletes will compete against top schools in basketball, football, and track events. Come and cheer for our teams!",
+      image: "https://picsum.photos/seed/sports/800/600"
+    },
+    {
+      id: 3,
+      title: "Spring Arts & Music Festival",
+      date: "May 20, 2026",
+      time: "4:00 PM - 8:00 PM",
+      location: "School Courtyard",
+      category: "Arts",
+      description: "A celebration of creativity featuring student art exhibitions and live musical performances by our school band and choir.",
+      image: "https://picsum.photos/seed/arts/800/600"
+    }
+  ];
+
+  const news = [
+    {
+      id: 1,
+      title: "KB Academy Wins Regional Robotics Championship",
+      date: "March 10, 2026",
+      summary: "Our robotics team secured first place at the regional competition, qualifying for the national finals this summer.",
+      tag: "News"
+    },
+    {
+      id: 2,
+      title: "New STEM Laboratory Inauguration",
+      date: "March 5, 2026",
+      summary: "We are excited to announce the opening of our state-of-the-art STEM lab, equipped with the latest technology for hands-on learning.",
+      tag: "Announcement"
+    }
+  ];
+
+  return (
+    <section id="events" className="py-24 bg-white relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-6">
+          <div className="max-w-2xl">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="flex items-center gap-2 text-kb-gold font-bold uppercase tracking-widest text-sm mb-4"
+            >
+              <Calendar className="w-5 h-5" />
+              <span>What's Happening</span>
+            </motion.div>
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl lg:text-5xl font-serif font-bold text-kb-blue"
+            >
+              Events & Announcements
+            </motion.h2>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <button className="btn-premium btn-blue px-8 py-3 flex items-center gap-2 group">
+              View Full Calendar
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </motion.div>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-12">
+          {/* Main Events Column */}
+          <div className="lg:col-span-2 space-y-8">
+            <h3 className="text-2xl font-serif font-bold text-kb-blue border-b border-gray-100 pb-4 mb-8">Upcoming Events</h3>
+            <div className="grid md:grid-cols-2 gap-8">
+              {events.map((event, index) => (
+                <motion.div
+                  key={event.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group cursor-pointer"
+                >
+                  <div className="relative h-64 rounded-2xl overflow-hidden mb-6 shadow-xl">
+                    <img 
+                      src={event.image} 
+                      alt={event.title} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute top-4 left-4 bg-kb-gold text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                      {event.category}
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-4 text-sm text-gray-500 font-medium">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4 text-kb-gold" />
+                        {event.date}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4 text-kb-gold" />
+                        {event.location}
+                      </div>
+                    </div>
+                    <h4 className="text-xl font-bold text-kb-blue group-hover:text-kb-gold transition-colors">
+                      {event.title}
+                    </h4>
+                    <p className="text-gray-500 text-sm line-clamp-2">
+                      {event.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* News & Announcements Sidebar */}
+          <div className="space-y-8">
+            <h3 className="text-2xl font-serif font-bold text-kb-blue border-b border-gray-100 pb-4 mb-8">Latest News</h3>
+            <div className="space-y-6">
+              {news.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="p-6 rounded-2xl bg-gray-50 border border-gray-100 hover:border-kb-gold/30 hover:shadow-lg transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-kb-gold bg-kb-gold/10 px-2 py-1 rounded">
+                      {item.tag}
+                    </span>
+                    <span className="text-xs text-gray-400 font-medium">{item.date}</span>
+                  </div>
+                  <h4 className="font-bold text-kb-blue mb-2 group-hover:text-kb-gold transition-colors">
+                    {item.title}
+                  </h4>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    {item.summary}
+                  </p>
+                  <div className="mt-4 flex items-center gap-2 text-xs font-bold text-kb-blue group-hover:gap-3 transition-all">
+                    Read More <ArrowRight className="w-3 h-3" />
+                  </div>
+                </motion.div>
+              ))}
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-kb-blue rounded-2xl p-8 text-white relative overflow-hidden"
+              >
+                <div className="relative z-10">
+                  <h4 className="text-xl font-serif font-bold mb-4">Stay Updated</h4>
+                  <p className="text-white/70 text-sm mb-6">Subscribe to our newsletter to receive the latest news and event updates directly in your inbox.</p>
+                  <form onSubmit={handleSubscribe} className="space-y-4">
+                    <div className="flex gap-2">
+                      <input 
+                        type="email" 
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Your email" 
+                        className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:border-kb-gold transition-colors"
+                      />
+                      <button 
+                        type="submit"
+                        disabled={status === "loading"}
+                        className="bg-kb-gold text-white p-2 rounded-lg hover:bg-kb-gold/80 transition-colors disabled:opacity-50"
+                      >
+                        {status === "loading" ? (
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <ArrowRight className="w-5 h-5" />
+                        )}
+                      </button>
+                    </div>
+                    {status === "success" && (
+                      <p className="text-kb-gold text-xs font-bold animate-pulse">Successfully subscribed!</p>
+                    )}
+                    {status === "error" && (
+                      <p className="text-red-400 text-xs font-bold">Failed to subscribe. Try again.</p>
+                    )}
+                  </form>
+                </div>
+                <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-kb-gold/10 rounded-full blur-3xl"></div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -971,6 +1217,7 @@ export default function App() {
         <WhyChoose />
         <Programs />
         <CampusLife />
+        <EventsSection />
         <Admission />
         <Staff />
         <Testimonials />
