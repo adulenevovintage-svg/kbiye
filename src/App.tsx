@@ -443,11 +443,13 @@ const Admission = () => {
     message: ""
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Submitting application form...", formData);
     setStatus("loading");
+    setErrorMessage("");
 
     try {
       const response = await fetch("/api/apply", {
@@ -464,11 +466,14 @@ const Admission = () => {
         setStatus("success");
         setFormData({ studentName: "", parentName: "", email: "", phone: "+251", program: "Kindergarten", message: "" });
       } else {
-        console.error("Submission failed:", data.error || "Unknown error");
+        const errorMsg = data.error || "Something went wrong. Please try again later.";
+        console.error("Submission failed:", errorMsg);
+        setErrorMessage(errorMsg);
         setStatus("error");
       }
     } catch (error) {
       console.error("Submission network error:", error);
+      setErrorMessage("Network error. Please check your connection and try again.");
       setStatus("error");
     }
   };
@@ -534,6 +539,11 @@ const Admission = () => {
               </motion.div>
             ) : (
               <form className="space-y-4" onSubmit={handleSubmit}>
+                {status === "error" && (
+                  <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm mb-4">
+                    {errorMessage}
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Student Name</label>
