@@ -459,7 +459,17 @@ const Admission = () => {
       });
 
       console.log("Response status:", response.status);
-      const data = await response.json();
+      
+      let data;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text);
+        data = { error: "Server returned an unexpected response. This might be a deployment issue." };
+      }
+
       console.log("Response data:", data);
 
       if (response.ok) {
@@ -473,7 +483,7 @@ const Admission = () => {
       }
     } catch (error) {
       console.error("Submission network error:", error);
-      setErrorMessage("Network error. Please check your connection and try again.");
+      setErrorMessage("Network error: Could not reach the server. Please check your internet or try again later.");
       setStatus("error");
     }
   };
