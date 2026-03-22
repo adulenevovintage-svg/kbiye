@@ -52,6 +52,25 @@ const Navbar = () => {
     { name: "Contact", href: "#contact" },
   ];
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setIsMenuOpen(false);
+    
+    const targetId = href.replace("#", "");
+    const element = document.getElementById(targetId);
+    
+    if (element) {
+      const headerOffset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
+
   return (
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled || isMenuOpen ? "glass-nav py-3" : "bg-transparent py-6"}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -65,42 +84,53 @@ const Navbar = () => {
           <span className={`font-serif text-2xl font-bold tracking-tight ${isScrolled || isMenuOpen ? "text-kb-blue" : "text-white"}`}>KB Academy</span>
         </div>
         
-        {/* Desktop Menu - Hidden to use Hamburger for all devices */}
-        <div className="hidden items-center gap-8 font-medium">
+        {/* Desktop Menu */}
+        <div className="hidden lg:flex items-center gap-8 font-medium">
           {navLinks.map((link) => (
-            <a key={link.name} href={link.href} className="hover:text-kb-gold transition-colors">{link.name}</a>
+            <a 
+              key={link.name} 
+              href={link.href} 
+              onClick={(e) => handleNavClick(e, link.href)}
+              className={`${isScrolled || isMenuOpen ? "text-kb-blue" : "text-white"} hover:text-kb-gold transition-colors cursor-pointer`}
+            >
+              {link.name}
+            </a>
           ))}
         </div>
 
         <div className="flex items-center gap-4">
-          <a href="#admission" className="btn-premium btn-gold text-sm px-6 py-2.5 hidden sm:flex">
+          <a 
+            href="#admission" 
+            onClick={(e) => handleNavClick(e, "#admission")}
+            className="btn-premium btn-gold text-sm px-6 py-2.5 hidden sm:flex cursor-pointer"
+          >
             Apply Now
           </a>
           
-          {/* Hamburger Button - Visible on all screen sizes */}
+          {/* Hamburger Button */}
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`p-2 rounded-lg transition-colors ${isScrolled || isMenuOpen ? "text-kb-blue hover:bg-kb-accent/20" : "text-white hover:bg-white/10"}`}
+            className={`p-2 rounded-lg transition-colors z-50 ${isScrolled || isMenuOpen ? "text-kb-blue hover:bg-kb-accent/20" : "text-white hover:bg-white/10"}`}
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Menu Overlay - Visible on all screen sizes when open */}
+      {/* Menu Overlay - Vertical List */}
       <motion.div
         initial={false}
-        animate={isMenuOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
-        className="overflow-hidden bg-white/95 backdrop-blur-xl border-t border-gray-100"
+        animate={isMenuOpen ? { height: "100vh", opacity: 1 } : { height: 0, opacity: 0 }}
+        className="fixed inset-0 overflow-hidden bg-white/98 backdrop-blur-2xl z-40"
       >
-        <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row md:justify-between gap-8 md:items-center">
-          <div className="flex flex-col md:flex-row gap-6 md:gap-12">
+        <div className="h-full flex flex-col items-center justify-center text-center gap-10 px-6">
+          <div className="flex flex-col items-center gap-8">
             {navLinks.map((link) => (
               <a 
                 key={link.name} 
                 href={link.href} 
-                onClick={() => setIsMenuOpen(false)}
-                className="text-2xl md:text-3xl font-serif font-bold text-kb-blue hover:text-kb-gold transition-all hover:translate-x-2 md:hover:translate-x-0 md:hover:-translate-y-1"
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="text-4xl font-serif font-bold text-kb-blue hover:text-kb-gold transition-all hover:scale-110 cursor-pointer"
               >
                 {link.name}
               </a>
@@ -108,8 +138,8 @@ const Navbar = () => {
           </div>
           <a 
             href="#admission" 
-            onClick={() => setIsMenuOpen(false)}
-            className="btn-premium btn-gold px-12 py-4 text-center"
+            onClick={(e) => handleNavClick(e, "#admission")}
+            className="btn-premium btn-gold px-12 py-4 text-center w-full max-w-xs text-xl cursor-pointer"
           >
             Apply Now
           </a>
